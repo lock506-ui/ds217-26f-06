@@ -39,13 +39,17 @@ The two extracts (Tasks 4.3 and 5.2) hold the rows of 16 sample patients, `SAMPL
 ## Setup
 
 1. Fork and clone the repository, then open its folder in VS Code.
-2. Create the environment:
+2. Create the Python 3.10 environment (this checkout is adapted from the supplied Python 3.13 setup):
 
     ```bash
-    uv venv --seed
+    uv venv --python 3.10 --seed
     source .venv/bin/activate
     uv sync
     ```
+
+    On Windows PowerShell, use `.\.venv\Scripts\Activate.ps1` instead of `source .venv/bin/activate`. The notebook explicitly selects Git Bash when it is installed under `Program Files/Git`, so the Task 1.1 `%%bash` cell can use the required `wc` command without invoking the Windows WSL launcher.
+
+    The compatible versions are NumPy 2.2.6, pandas 2.3.3, PyArrow 21.0.0, and ipykernel 6.29.5; `uv.lock` records their resolved dependencies. NumPy 2.2.6 supports Python 3.10–3.13 ([release notes](https://numpy.org/devdocs/release/2.2.6-notes.html)); pandas 2.3.3 provides Python 3.10 packages ([package files](https://pypi.org/project/pandas/2.3.3/)). The supplied generator, manifest checks, cleaning rules, and output contracts still apply. For CSV read-back, the last cell explicitly converts the parsed date column to `datetime64[us]`, because pandas 2.x reads it at nanosecond resolution.
 3. Open `assignment.ipynb` and select the `.venv` Python as the kernel.
 4. Run the first code cell. When `data/` is missing, it runs `generate_data.py` (`python3 generate_data.py` in the terminal does the same) to write the five files.
     - Expect: the Python, NumPy, and pandas versions, `Wrote 5 data files to .../data` on the first run, then `Verified 5 data files`.
@@ -61,7 +65,7 @@ assignment/
 ├── data_manifest.json          # supplied: each data file's sha256 checksum
 ├── data/                       # made by generate_data.py; never edit it (Git ignores it)
 ├── pyproject.toml, uv.lock     # supplied: the packages and exact versions `uv sync` installs
-├── .python-version             # supplied: Python 3.13
+├── .python-version             # local Python 3.10 environment
 ├── CHECKS.md                   # supplied: what earns the points
 ├── HINTS.md                    # supplied: how to find the cause when a task goes wrong
 ├── .gitignore                  # supplied: keeps data/ and .venv/ out of Git
@@ -463,3 +467,5 @@ Read `output/analysis_sample.csv` back with `dtype={...}` for every column but `
 2. Commit `assignment.ipynb` (with its outputs) and the eleven `output/` files from the Checkpoints, then push. The course grades your fork's `main` branch after the deadline.
 
 The checks the course runs, and their points: [CHECKS.md](CHECKS.md)
+
+There is automated grading: 75 points come from the committed output files after the deadline, and 25 points come from human review. This checkout does not include a runnable course autograder or a GitHub Actions workflow. The notebook's manifest checks, named assertions, and CSV read-back are local checks; passing them does not itself produce an official grade. Submit the executed notebook and all eleven output files on your fork's `main` branch, with at least two descriptive commits as required by `CHECKS.md`.
