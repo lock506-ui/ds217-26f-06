@@ -1,0 +1,10 @@
+table,issue,decision,reason
+patients,exact duplicate rows,Remove exact repeats and keep the first row.,The registry re-export repeats identical patient records rather than recording additional patients.
+patients,gender spellings that are not a code,"Strip and lowercase text, map known spellings to F/M/X, and leave blanks and unknown missing.","Female/woman, male/man, and nonbinary/NB spellings identify the dictionary categories while unknown supplies no gender."
+patients,site codes needing normalization,Uppercase site codes and remove every space and hyphen.,"Spellings such as N-01 and n01 refer to N01, while E04 must remain a separate registry code even though the directory omits it."
+patients,birth_year sentinel 9999,Replace 9999 with missing and use nullable Int64.,The data dictionary defines 9999 as not recorded rather than a patient's birth year.
+visits,weight column named wt_kg in visits_south.csv,Rename wt_kg to weight_kg before stacking and preserve the exporting filename.,"Both offices report the same kilogram measurement, and the south export also serves E04 patients."
+visits,sbp sentinel 999 and readings outside 70 through 250,Convert SBP to numbers and retain only the inclusive 70 to 250 range as nullable Int64.,"999 means not measured and other out-of-range entries violate the contract, while the planted 70 and 250 readings satisfy it."
+visits,impossible and loosely written visit dates,Require exact YYYY-MM-DD text and a real calendar date; otherwise store NaT.,Dates such as 2026-02-30 are impossible and 2026/02/02 fails the required input format.
+visits,repeated patient_id and visit pairs,"Remove exact repeats, normalize visit labels, then retain the reading with the later visit_time.",The remaining repeated pairs are same-visit rechecks taken 10 to 30 minutes later and should contribute one updated reading.
+sites,repeated site_code rows,Keep current records only and select site_code and site_name.,"N01 and S02 each have a retired name, so using all versions would multiply patient rows and attach obsolete names."
